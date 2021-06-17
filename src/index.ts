@@ -122,7 +122,7 @@ export async function getApp(config: Config): Promise<Koa> {
         try {
             // 5 Second timeout, default is 30 seconds which is too long
             await page.goto(`data:text/html;charset=utf-8;base64,${htmlBase64}`, {
-                timeout: 5000,
+                timeout: 10000,
             });
 
             const imageFormat = config.getImageFormat(body);
