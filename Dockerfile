@@ -13,6 +13,10 @@ RUN apt-get update && \
     fonts-noto fonts-noto-color-emoji && \
     rm -rf /var/lib/apt/lists/*
 
+# install twemoji font
+RUN mkdir /usr/share/fonts/twemoji
+COPY ./Twemoji.ttf /usr/share/fonts/twemoji/
+
 # Run everything after as non-privileged user.
 
 # Create workdir
