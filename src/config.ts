@@ -1,4 +1,4 @@
-import * as Types from "./types";
+import * as Types from './types';
 
 export default class Config {
     interface?: string;
@@ -12,34 +12,34 @@ export default class Config {
 
     imageFormat: Types.ImageFormat;
     quality: number;
+    scaleFactor: number;
 
     templatesDir: string;
 
     constructor() {
         const {
-            SUSHII_IMG_INTERFACE = "0.0.0.0",
-            SUSHII_IMG_PORT = "3000",
-            SUSHII_IMG_HEADLESS = "true",
-            SUSHII_IMG_BROWSER_ARGS = "",
-            SUSHII_IMG_WIDTH = "512",
-            SUSHII_IMG_HEIGHT = "512",
-            SUSHII_IMG_IMAGE_FORMAT = "png",
-            SUSHII_IMG_QUALITY = "70",
-            SUSHII_TEMPLATES_DIR = "./templates",
+            SUSHII_IMG_INTERFACE = '0.0.0.0',
+            SUSHII_IMG_PORT = '3000',
+            SUSHII_IMG_HEADLESS = 'true',
+            SUSHII_IMG_BROWSER_ARGS = '',
+            SUSHII_IMG_WIDTH = '512',
+            SUSHII_IMG_HEIGHT = '512',
+            SUSHII_IMG_IMAGE_FORMAT = 'png',
+            SUSHII_IMG_QUALITY = '70',
+            SUSHII_TEMPLATES_DIR = './templates',
+            SUSHII_DEVICE_SCALE_FACTOR = '1',
         } = process.env;
 
         this.interface = SUSHII_IMG_INTERFACE;
         this.port = parseInt(SUSHII_IMG_PORT) || 3000;
-        this.headless = SUSHII_IMG_HEADLESS
-            ? SUSHII_IMG_HEADLESS === "true"
-            : true;
-        this.browserArgs = (SUSHII_IMG_BROWSER_ARGS || "").split(" ");
+        this.headless = SUSHII_IMG_HEADLESS ? SUSHII_IMG_HEADLESS === 'true' : true;
+        this.browserArgs = (SUSHII_IMG_BROWSER_ARGS || '').split(' ');
         this.width = parseInt(SUSHII_IMG_WIDTH) || 512;
         this.height = parseInt(SUSHII_IMG_HEIGHT) || 512;
-        this.imageFormat =
-            (SUSHII_IMG_IMAGE_FORMAT as Types.ImageFormat) || "png";
+        this.imageFormat = (SUSHII_IMG_IMAGE_FORMAT as Types.ImageFormat) || 'png';
         this.quality = parseInt(SUSHII_IMG_QUALITY) || 70;
-        this.templatesDir = SUSHII_TEMPLATES_DIR || "./templates";
+        this.templatesDir = SUSHII_TEMPLATES_DIR || './templates';
+        this.scaleFactor = parseInt(SUSHII_DEVICE_SCALE_FACTOR) || 1;
     }
 
     /**
@@ -60,7 +60,7 @@ export default class Config {
         }
 
         // none given in args or config
-        return "png";
+        return 'png';
     }
 
     /**
@@ -69,7 +69,7 @@ export default class Config {
      * @param value Format value to test
      */
     _isValidFormat(value: string): value is Types.ImageFormat {
-        const allowedFormats: string[] = ["png", "jpeg"];
+        const allowedFormats: string[] = ['png', 'jpeg'];
 
         return allowedFormats.indexOf(value) !== -1;
     }
@@ -84,8 +84,8 @@ export default class Config {
         let type = this._getImageFormat(body);
         // its jpeg not jpg bruh
         // https://tools.ietf.org/html/rfc3745, https://www.w3.org/Graphics/JPEG/
-        if (type === "jpg") {
-            type = "jpeg";
+        if (type === 'jpg') {
+            type = 'jpeg';
         }
 
         if (!this._isValidFormat(type)) {
@@ -137,8 +137,8 @@ export default class Config {
         const { width, height } = body;
 
         const dimensions: Types.Dimensions = {
-            width: this._getDimension(width, "width"),
-            height: this._getDimension(height, "height"),
+            width: this._getDimension(width, 'width'),
+            height: this._getDimension(height, 'height'),
         };
 
         return dimensions;
@@ -161,5 +161,24 @@ export default class Config {
         }
 
         return 70;
+    }
+
+    /**
+     * Gets scale factor of viewport
+     * @param body HTTP request body
+     * @returns    deviceScaleFactor value
+     */
+    getScaleFactor(body: Types.Body): number {
+        const { scaleFactor } = body;
+
+        if (scaleFactor !== undefined) {
+            return parseInt(scaleFactor);
+        }
+
+        if (this.scaleFactor !== undefined) {
+            return this.scaleFactor;
+        }
+
+        return 1;
     }
 }

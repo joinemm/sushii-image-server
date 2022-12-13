@@ -13,6 +13,7 @@ export interface Body {
 
     imageFormat?: string;
     quality?: string;
+    scaleFactor?: string;
 }
 
 export interface TemplateBodyContext extends Body {

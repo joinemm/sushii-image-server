@@ -113,17 +113,24 @@ export async function getApp(config: Config): Promise<Koa> {
         const body = ctx.request.body;
 
         const { width, height } = config.getDimensions(body);
+        const scaleFactor = config.getScaleFactor(body);
 
         // Encode HTML string in base64
         const buff = Buffer.from(html, "utf-8");
         const htmlBase64 = buff.toString("base64");
 
-        await page.setViewport({ width, height });
+        await page.setViewport({ width, height, deviceScaleFactor: scaleFactor });
         try {
             // 5 Second timeout, default is 30 seconds which is too long
             await page.goto(`data:text/html;charset=utf-8;base64,${htmlBase64}`, {
                 timeout: 10000,
             });
+
+            const containerElem = await page.$('#boundingBox');
+            if (containerElem) {
+                const boundingBox = await containerElem.boundingBox();
+                await page.setViewport({ width: boundingBox.width, height: boundingBox.height, deviceScaleFactor: scaleFactor });
+            }
 
             const imageFormat = config.getImageFormat(body);
             const screenshotOptions: ScreenshotOptions = {
