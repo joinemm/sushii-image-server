@@ -129,7 +129,7 @@ export async function getApp(config: Config): Promise<Koa> {
             const containerElem = await page.$('#boundingBox');
             if (containerElem) {
                 const boundingBox = await containerElem.boundingBox();
-                await page.setViewport({ width: boundingBox.width, height: boundingBox.height, deviceScaleFactor: scaleFactor });
+                await page.setViewport({ width: Math.round(boundingBox.width), height: Math.round(boundingBox.height), deviceScaleFactor: scaleFactor });
             }
 
             const imageFormat = config.getImageFormat(body);
