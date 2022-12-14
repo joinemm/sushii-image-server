@@ -2,7 +2,7 @@ export interface ScreenshotOptions {
     omitBackground: boolean;
     type: "jpeg" | "png";
     quality?: number;
-    fullPage: boolean;
+    fullPage?: boolean;
 }
 
 export interface Body {
