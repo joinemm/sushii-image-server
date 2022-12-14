@@ -136,6 +136,7 @@ export async function getApp(config: Config): Promise<Koa> {
             const screenshotOptions: ScreenshotOptions = {
                 omitBackground: true,
                 type: imageFormat,
+                fullPage: true,
             };
 
             if (imageFormat == "jpeg") {
