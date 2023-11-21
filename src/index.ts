@@ -121,9 +121,9 @@ export async function getApp(config: Config): Promise<Koa> {
 
         await page.setViewport({ width, height, deviceScaleFactor: scaleFactor });
         try {
-            // 5 Second timeout, default is 30 seconds which is too long
+            // 15 Second timeout, default is 30 seconds which is too long
             await page.goto(`data:text/html;charset=utf-8;base64,${htmlBase64}`, {
-                timeout: 10000,
+                timeout: 15000,
             });
 
             const containerElem = await page.$('#boundingBox');
